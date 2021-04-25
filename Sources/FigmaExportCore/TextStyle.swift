@@ -41,6 +41,7 @@ public enum DynamicTypeStyle: String, RawRepresentable {
 
 public struct TextStyle: Asset {
     public var name: String
+    public var path: [String]
     public var platform: Platform?
     public let fontName: String
     public let fontSize: Double
@@ -50,6 +51,7 @@ public struct TextStyle: Asset {
 
     public init(
         name: String,
+        path: [String] = [],
         platform: Platform? = nil,
         fontName: String,
         fontSize: Double,
@@ -58,6 +60,7 @@ public struct TextStyle: Asset {
         letterSpacing: Double) {
         
         self.name = name
+        self.path = path
         self.fontName = fontName
         self.fontSize = fontSize
         self.fontStyle = fontStyle

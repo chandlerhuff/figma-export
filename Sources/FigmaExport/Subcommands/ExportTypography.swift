@@ -69,6 +69,7 @@ extension FigmaExportCommand {
             
             try fileWritter.write(files: files)
             
+            guard iosParams.skipXcodeProjectWriting != true else { return }
             do {
                 let xcodeProject = try XcodeProjectWritter(xcodeProjPath: iosParams.xcodeprojPath, target: iosParams.target)
                 try files.forEach { file in

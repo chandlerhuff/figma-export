@@ -5,14 +5,18 @@ public struct Color: Asset {
     /// Raw name of the color
     public var name: String
     
+    /// Raw path of the color
+    public var path: [String]
+    
     /// Platform-specific color
     public let platform: Platform?
     
     /// Color components, Double value from 0 to 1
     public let red, green, blue, alpha: Double
     
-    public init(name: String, platform: Platform? = nil, red: Double, green: Double, blue: Double, alpha: Double) {
+    public init(name: String, path: [String] = [], platform: Platform? = nil, red: Double, green: Double, blue: Double, alpha: Double) {
         self.name = name
+        self.path = path
         self.platform = platform
         self.red = red
         self.green = green

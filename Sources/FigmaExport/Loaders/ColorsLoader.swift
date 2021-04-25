@@ -79,7 +79,7 @@ final class ColorsLoader {
         guard !style.description.isEmpty else {
             return true // Цвет общий
         }
-        return !style.description.contains("none")
+        return !style.description.lowercased().contains("none")
     }
     
     private func loadNodes(fileId: String, nodeIds: [String]) throws -> [NodeId: Node] {

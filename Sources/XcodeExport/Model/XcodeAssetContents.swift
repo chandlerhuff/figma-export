@@ -10,6 +10,21 @@ enum XcodeAssetIdiom: String, Encodable {
     case car
 }
 
+struct XcodeAssetFolderContents: Encodable {
+    struct Info: Encodable {
+        let version = 1
+        let author = "xcode"
+    }
+    struct Properties: Encodable {
+        enum CodingKeys: String, CodingKey {
+            case providesNamespace = "provides-namespace"
+        }
+        let providesNamespace = true
+    }
+    let info = Info()
+    let properties = Properties()
+}
+
 struct XcodeAssetContents: Encodable {
     struct Info: Encodable {
         let version = 1

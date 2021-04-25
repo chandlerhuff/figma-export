@@ -59,10 +59,31 @@ final public class XcodeColorExporter {
             data: contentsJson.data
         ))
         
+        var contentItems: [URL: FileContents] = [:]
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        
         // Assets.xcassets/Colors/***.colorset/Contents.json
         colorPairs.forEach { colorPair in
             let name = colorPair.light.name
-            let dirURL = assetsColorsURL.appendingPathComponent("\(name).colorset")
+            let dirURL: URL
+            if output.assetsMaintainDirectories, !colorPair.light.path.isEmpty, let colorName = colorPair.light.path.last {
+                var pathURL = assetsColorsURL
+                if contentItems[pathURL] == nil {
+                    contentItems[pathURL] = FileContents(destination: Destination(directory: pathURL, file: URL(string: "Contents.json")!),
+                                                         data: try! encoder.encode(XcodeAssetFolderContents()))
+                }
+                colorPair.light.path.dropLast().forEach { directory in
+                    pathURL.appendPathComponent(directory, isDirectory: true)
+                    if contentItems[pathURL] == nil {
+                        contentItems[pathURL] = FileContents(destination: Destination(directory: pathURL, file: URL(string: "Contents.json")!),
+                                                             data: try! encoder.encode(XcodeAssetFolderContents()))
+                    }
+                }
+                dirURL = pathURL.appendingPathComponent("\(colorName).colorset")
+            } else {
+                dirURL = assetsColorsURL.appendingPathComponent("\(name).colorset")
+            }
             
             var colors: [XcodeAssetContents.ColorData] = [
                 XcodeAssetContents.ColorData(
@@ -82,14 +103,13 @@ final public class XcodeColorExporter {
             }
             
             let contents = XcodeAssetContents(colors: colors)
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
             let data = try! encoder.encode(contents)
             let fileURL = URL(string: "Contents.json")!
             files.append(FileContents(
                 destination: Destination(directory: dirURL, file: fileURL),
                 data: data
             ))
+            files.append(contentsOf: contentItems.values)
         }
         
         return files

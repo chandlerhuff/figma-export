@@ -17,19 +17,23 @@ public enum Scale {
 public struct Image: Asset {
 
     public var name: String
+    public var path: [String]
     public let scale: Scale
     public let format: String
     public let url: URL
     public let idiom: String?
+    public let preservesVectorRepresentation: Bool
 
     public var platform: Platform?
 
-    public init(name: String, scale: Scale = .all, platform: Platform? = nil, idiom: String? = nil, url: URL, format: String) {
+    public init(name: String, path: [String] = [], scale: Scale = .all, platform: Platform? = nil, idiom: String? = nil, preservesVectorRepresentation: Bool = false, url: URL, format: String) {
         self.name = name
+        self.path = path
         self.scale = scale
         self.platform = platform
         self.url = url
         self.idiom = idiom
+        self.preservesVectorRepresentation = preservesVectorRepresentation
         self.format = format
     }
 
@@ -55,18 +59,24 @@ public struct ImagePack: Asset {
             }
         }
     }
+    public var path: [String]
     public var platform: Platform?
+    public let preservesVectorRepresentation: Bool
 
-    public init(name: String, images: [Image], platform: Platform? = nil) {
+    public init(name: String, path: [String] = [], images: [Image], platform: Platform? = nil) {
         self.name = name
+        self.path = path
         self.images = images
         self.platform = platform
+        preservesVectorRepresentation = images.first(where: { $0.preservesVectorRepresentation })?.preservesVectorRepresentation ?? false
     }
 
     public init(image: Image, platform: Platform? = nil) {
         self.name = image.name
+        self.path = image.path
         self.images = [image]
         self.platform = platform
+        preservesVectorRepresentation = image.preservesVectorRepresentation
     }
 
 }

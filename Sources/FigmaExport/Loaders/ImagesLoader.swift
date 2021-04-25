@@ -87,9 +87,9 @@ final class ImagesLoader {
     private func fetchImageComponents(fileId: String, frameName: String, filter: String? = nil) throws -> [NodeId: Component] {
         var components = try loadComponents(fileId: fileId)
             .filter {
-                $0.containingFrame.name == frameName &&
-                    ($0.description == platform.rawValue || $0.description == nil || $0.description == "") &&
-                    $0.description?.contains("none") == false
+                ($0.containingFrame.name == frameName || $0.containingFrame.pageName == frameName) &&
+                    ($0.description?.lowercased().contains(platform.rawValue) == true || $0.description == nil || $0.description == "") &&
+                    $0.description?.lowercased().contains("none") == false
             }
 
         if let filter = filter {
@@ -120,7 +120,7 @@ final class ImagesLoader {
         let imageIdToImagePath = try loadImages(fileId: fileId, nodeIds: imagesIds, params: params)
 
         // Group images by name
-        let groups = Dictionary(grouping: imagesDict) { $1.name.parseNameAndIdiom(platform: platform).name }
+        let groups = Dictionary(grouping: imagesDict) { $1.parseNameAndIdiom(platform: platform, frameName: frameName).name }
 
         // Create image packs for groups
         let imagePacks = groups.compactMap { packName, components -> ImagePack? in
@@ -129,7 +129,14 @@ final class ImagesLoader {
                     return nil
                 }
                 let (name, idiom) = component.name.parseNameAndIdiom(platform: platform)
-                return Image(name: name, scale: .all, idiom: idiom, url: url, format: params.format)
+                let finalName: String
+                if component.containingFrame.name != frameName, component.containingFrame.pageName == frameName, let frameName = component.containingFrame.name {
+                    finalName = "\(frameName)/\(name)"
+                } else {
+                    finalName = name
+                }
+                let preservesVectorRepresentation = component.description?.lowercased().contains("vector") ?? false
+                return Image(name: finalName, scale: .all, idiom: idiom, preservesVectorRepresentation: preservesVectorRepresentation, url: url, format: params.format)
             }
             return ImagePack(name: packName, images: packImages, platform: platform)
         }
@@ -225,4 +232,17 @@ private extension String {
         }
     }
 
+}
+
+private extension Component {
+    func parseNameAndIdiom(platform: Platform, frameName: String) -> (name: String, idiom: String) {
+        let result = name.parseNameAndIdiom(platform: platform)
+        let finalName: String
+        if containingFrame.name != frameName, containingFrame.pageName == frameName, let frameName = containingFrame.name {
+            finalName = "\(frameName)/\(result.name)"
+        } else {
+            finalName = result.name
+        }
+        return (name: finalName, idiom: result.idiom)
+    }
 }

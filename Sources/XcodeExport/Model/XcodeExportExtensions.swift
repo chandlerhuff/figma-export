@@ -75,6 +75,7 @@ extension ImagePack {
     func makeFileContents(
         to directory: URL,
         preservesVector: Bool?,
+        assetsMaintainDirectories: Bool? = nil,
         renderMode: XcodeRenderMode,
         appearance: Appearance? = nil) throws -> [FileContents] {
         
@@ -82,8 +83,29 @@ extension ImagePack {
 
         return try packForXcode()
             .flatMap { imagePack -> [FileContents] in
-                let name = imagePack.name
-                let dirURL = directory.appendingPathComponent("\(name).imageset")
+                let dirURL: URL
+                var contentItems: [URL: FileContents] = [:]
+                if assetsMaintainDirectories == true, !imagePack.path.isEmpty, let imageName = imagePack.path.last {
+                    let encoder = JSONEncoder()
+                    encoder.outputFormatting = .prettyPrinted
+                    var pathURL = directory
+                    if contentItems[pathURL] == nil {
+                        contentItems[pathURL] = FileContents(destination: Destination(directory: pathURL, file: URL(string: "Contents.json")!),
+                                                             data: try! encoder.encode(XcodeAssetFolderContents()))
+                    }
+                    imagePack.path.dropLast().forEach { directory in
+                        pathURL.appendPathComponent(directory, isDirectory: true)
+                        if contentItems[pathURL] == nil {
+                            contentItems[pathURL] = FileContents(destination: Destination(directory: pathURL, file: URL(string: "Contents.json")!),
+                                                                 data: try! encoder.encode(XcodeAssetFolderContents()))
+                        }
+                    }
+                    dirURL = pathURL.appendingPathComponent("\(imageName).imageset")
+                } else {
+                    let name = imagePack.name
+                    dirURL = directory.appendingPathComponent("\(name).imageset")
+                }
+                
                 
                 let assetsContents = imagePack.makeXcodeAssetContentsImageData(appearance: appearance)
                 let contentsFileContents = try XcodeAssetContents(
@@ -93,7 +115,7 @@ extension ImagePack {
                 
                 let files = imagePack.makeImageFileContents(to: dirURL, appearance: appearance)
                 
-                return files + [contentsFileContents]
+                return files + [contentsFileContents] + contentItems.values
             } ?? []
     }
 
@@ -124,7 +146,7 @@ extension AssetPair where AssetType == ImagePack {
         let lightAssetContents = lightPack?.makeXcodeAssetContentsImageData(appearance: .light) ?? []
         let darkAssetContents = darkPack?.makeXcodeAssetContentsImageData(appearance: .dark) ?? []
 
-        let properties = XcodeAssetContents.Properties(preserveVectorData: preservesVector, renderMode: renderMode)
+        let properties = XcodeAssetContents.Properties(preserveVectorData: preservesVector == true || light.preservesVectorRepresentation, renderMode: renderMode)
 
         let contentsFileContents = try XcodeAssetContents(
             images: lightAssetContents + darkAssetContents,

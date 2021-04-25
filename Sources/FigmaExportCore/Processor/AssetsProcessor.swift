@@ -319,7 +319,9 @@ public extension AssetsProcessable {
             let split = asset.name.split(separator: "/")
             if split.count == 2, split[0] == split[1] {
                 renamedAsset.name = String(split[0])
+                renamedAsset.path = [renamedAsset.name]
             } else {
+                renamedAsset.path = renamedAsset.name.components(separatedBy: "/")
                 renamedAsset.name = renamedAsset.name.replacingOccurrences(of: "/", with: "_")
             }
             return renamedAsset

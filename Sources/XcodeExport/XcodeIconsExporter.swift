@@ -3,7 +3,7 @@ import FigmaExportCore
 
 final public class XcodeIconsExporter: XcodeImagesExporterBase {
 
-    public func export(icons: [ImagePack], append: Bool) throws -> [FileContents] {
+    public func export(icons: [ImagePack], append: Bool, assetsMaintainDirectories: Bool? = nil) throws -> [FileContents] {
         // Generate metadata (Assets.xcassets/Icons/Contents.json)
         let contentsFile = XcodeEmptyContents().makeFileContents(to: output.assetsFolderURL)
 
@@ -14,7 +14,7 @@ final public class XcodeIconsExporter: XcodeImagesExporterBase {
 
         let imageAssetsFiles = try icons.flatMap { imagePack -> [FileContents] in
             let preservesVector = preservesVectorRepresentation?.first(where: { $0 == imagePack.name }) != nil
-            return try imagePack.makeFileContents(to: assetsFolderURL, preservesVector: preservesVector, renderMode: renderMode)
+            return try imagePack.makeFileContents(to: assetsFolderURL, preservesVector: preservesVector || imagePack.preservesVectorRepresentation, assetsMaintainDirectories: assetsMaintainDirectories, renderMode: renderMode)
         }
 
         // Generate extensions

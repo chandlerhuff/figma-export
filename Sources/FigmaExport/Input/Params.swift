@@ -16,6 +16,7 @@ struct Params: Decodable {
             let nameValidateRegexp: String?
             let nameReplaceRegexp: String?
             let useSingleFile: Bool?
+            let lightModeSuffix: String?
             let darkModeSuffix: String?
         }
 
@@ -62,6 +63,7 @@ struct Params: Decodable {
             let format: VectorFormat
             let assetsFolder: String
             let preservesVectorRepresentation: [String]?
+            let nonTemplate: [String]?
             let nameStyle: NameStyle
 
             let imageSwift: URL?

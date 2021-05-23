@@ -136,7 +136,8 @@ final class ImagesLoader {
                     finalName = name
                 }
                 let preservesVectorRepresentation = component.description?.lowercased().contains("vector") ?? false
-                return Image(name: finalName, scale: .all, idiom: idiom, preservesVectorRepresentation: preservesVectorRepresentation, url: url, format: params.format)
+                let nonTemplate = component.description?.lowercased().contains("non-template") ?? false
+                return Image(name: finalName, scale: .all, idiom: idiom, preservesVectorRepresentation: preservesVectorRepresentation, nonTemplate: nonTemplate, url: url, format: params.format)
             }
             return ImagePack(name: packName, images: packImages, platform: platform)
         }

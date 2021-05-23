@@ -30,9 +30,16 @@ final class ColorsLoader {
 
     private func loadColorsFromSingleFile() throws -> (light: [Color], dark: [Color]?) {
         let colors = try loadColors(fileId: figmaParams.lightFileId)
+        let lightSuffix = colorParams?.lightModeSuffix
         let darkSuffix = colorParams?.darkModeSuffix ?? "_dark"
         let lightColors = colors
             .filter { !$0.name.hasSuffix(darkSuffix) }
+            .map { color -> Color in
+                guard let lightSuffix = lightSuffix, color.name.hasSuffix(lightSuffix) else { return color }
+                var newColor = color
+                newColor.name = String(color.name.dropLast(lightSuffix.count))
+                return newColor
+            }
         let darkColors = colors
             .filter { $0.name.hasSuffix(darkSuffix) }
             .map { color -> Color in

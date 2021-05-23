@@ -66,6 +66,7 @@ extension FigmaExportCommand {
                 assetsInSwiftPackage: ios.xcassetsInSwiftPackage,
                 addObjcAttribute: ios.addObjcAttribute,
                 preservesVectorRepresentation: ios.icons.preservesVectorRepresentation,
+                nonTemplate: ios.icons.nonTemplate,
                 uiKitImageExtensionURL: ios.icons.imageSwift,
                 swiftUIImageExtensionURL: ios.icons.swiftUIImageSwift,
                 renderMode: ios.icons.renderMode)

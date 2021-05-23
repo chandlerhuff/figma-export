@@ -36,6 +36,7 @@ extension FigmaExportCommand {
                     nameReplaceRegexp: options.params.common?.colors?.nameReplaceRegexp,
                     nameStyle: options.params.ios?.colors.nameStyle,
                     useSingleFile: options.params.common?.colors?.useSingleFile,
+                    lightModeSuffix: options.params.common?.colors?.lightModeSuffix,
                     darkModeSuffix: options.params.common?.colors?.darkModeSuffix
                 )
                 let colorPairs = processor.process(light: colors.light, dark: colors.dark)
@@ -59,6 +60,7 @@ extension FigmaExportCommand {
                     nameReplaceRegexp: options.params.common?.colors?.nameReplaceRegexp,
                     nameStyle: .snakeCase,
                     useSingleFile: options.params.common?.colors?.useSingleFile,
+                    lightModeSuffix: options.params.common?.colors?.lightModeSuffix,
                     darkModeSuffix: options.params.common?.colors?.darkModeSuffix
                 )
                 let colorPairs = processor.process(light: colors.light, dark: colors.dark)

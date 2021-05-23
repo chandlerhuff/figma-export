@@ -146,7 +146,7 @@ extension AssetPair where AssetType == ImagePack {
         let lightAssetContents = lightPack?.makeXcodeAssetContentsImageData(appearance: .light) ?? []
         let darkAssetContents = darkPack?.makeXcodeAssetContentsImageData(appearance: .dark) ?? []
 
-        let properties = XcodeAssetContents.Properties(preserveVectorData: preservesVector == true || light.preservesVectorRepresentation, renderMode: renderMode)
+        let properties = XcodeAssetContents.Properties(preserveVectorData: preservesVector == true || light.preservesVectorRepresentation, renderMode: light.nonTemplate ? .original : renderMode)
 
         let contentsFileContents = try XcodeAssetContents(
             images: lightAssetContents + darkAssetContents,

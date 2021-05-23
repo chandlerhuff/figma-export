@@ -23,10 +23,11 @@ public struct Image: Asset {
     public let url: URL
     public let idiom: String?
     public let preservesVectorRepresentation: Bool
+    public let nonTemplate: Bool
 
     public var platform: Platform?
 
-    public init(name: String, path: [String] = [], scale: Scale = .all, platform: Platform? = nil, idiom: String? = nil, preservesVectorRepresentation: Bool = false, url: URL, format: String) {
+    public init(name: String, path: [String] = [], scale: Scale = .all, platform: Platform? = nil, idiom: String? = nil, preservesVectorRepresentation: Bool = false, nonTemplate: Bool = false, url: URL, format: String) {
         self.name = name
         self.path = path
         self.scale = scale
@@ -34,6 +35,7 @@ public struct Image: Asset {
         self.url = url
         self.idiom = idiom
         self.preservesVectorRepresentation = preservesVectorRepresentation
+        self.nonTemplate = nonTemplate
         self.format = format
     }
 
@@ -62,6 +64,7 @@ public struct ImagePack: Asset {
     public var path: [String]
     public var platform: Platform?
     public let preservesVectorRepresentation: Bool
+    public let nonTemplate: Bool
 
     public init(name: String, path: [String] = [], images: [Image], platform: Platform? = nil) {
         self.name = name
@@ -69,6 +72,7 @@ public struct ImagePack: Asset {
         self.images = images
         self.platform = platform
         preservesVectorRepresentation = images.first(where: { $0.preservesVectorRepresentation })?.preservesVectorRepresentation ?? false
+        nonTemplate = images.first(where: { $0.nonTemplate })?.nonTemplate ?? false
     }
 
     public init(image: Image, platform: Platform? = nil) {
@@ -77,6 +81,7 @@ public struct ImagePack: Asset {
         self.images = [image]
         self.platform = platform
         preservesVectorRepresentation = image.preservesVectorRepresentation
+        nonTemplate = image.nonTemplate
     }
 
 }

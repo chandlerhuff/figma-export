@@ -148,6 +148,7 @@ final class AssetsProcessorTests: XCTestCase {
             nameReplaceRegexp: nil,
             nameStyle: .camelCase,
             useSingleFile: false,
+            lightModeSuffix: nil,
             darkModeSuffix: ""
         )
         let colors = try processor.process(light: lights, dark: darks).get()
@@ -175,6 +176,7 @@ final class AssetsProcessorTests: XCTestCase {
             nameReplaceRegexp: nil,
             nameStyle: .camelCase,
             useSingleFile: false,
+            lightModeSuffix: nil,
             darkModeSuffix: ""
         )
         

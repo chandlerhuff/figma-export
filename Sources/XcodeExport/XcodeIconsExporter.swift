@@ -10,11 +10,13 @@ final public class XcodeIconsExporter: XcodeImagesExporterBase {
         // Generate assets
         let assetsFolderURL = output.assetsFolderURL
         let preservesVectorRepresentation = output.preservesVectorRepresentation
+        let nonTemplate = output.nonTemplate
         let renderMode = output.renderMode ?? .template
 
         let imageAssetsFiles = try icons.flatMap { imagePack -> [FileContents] in
             let preservesVector = preservesVectorRepresentation?.first(where: { $0 == imagePack.name }) != nil
-            return try imagePack.makeFileContents(to: assetsFolderURL, preservesVector: preservesVector || imagePack.preservesVectorRepresentation, assetsMaintainDirectories: assetsMaintainDirectories, renderMode: renderMode)
+            let nonTemplateImage = nonTemplate?.first(where: { $0 == imagePack.name }) != nil
+            return try imagePack.makeFileContents(to: assetsFolderURL, preservesVector: preservesVector || imagePack.preservesVectorRepresentation, assetsMaintainDirectories: assetsMaintainDirectories, renderMode: (nonTemplateImage || imagePack.nonTemplate) ? .original : renderMode)
         }
 
         // Generate extensions

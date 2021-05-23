@@ -8,6 +8,7 @@ public struct XcodeImagesOutput {
     let assetsInSwiftPackage: Bool
     let addObjcAttribute: Bool
     let preservesVectorRepresentation: [String]?
+    let nonTemplate: [String]?
     let renderMode: XcodeRenderMode?
     
     let uiKitImageExtensionURL: URL?
@@ -25,6 +26,7 @@ public struct XcodeImagesOutput {
         assetsInSwiftPackage: Bool? = false,
         addObjcAttribute: Bool? = false,
         preservesVectorRepresentation: [String]? = nil,
+        nonTemplate: [String]? = nil,
         uiKitImageExtensionURL: URL? = nil,
         swiftUIImageExtensionURL: URL? = nil,
         renderMode: XcodeRenderMode? = nil) {
@@ -34,6 +36,7 @@ public struct XcodeImagesOutput {
         self.assetsInSwiftPackage = assetsInSwiftPackage ?? false
         self.addObjcAttribute = addObjcAttribute ?? false
         self.preservesVectorRepresentation = preservesVectorRepresentation
+        self.nonTemplate = nonTemplate
         self.uiKitImageExtensionURL = uiKitImageExtensionURL
         self.swiftUIImageExtensionURL = swiftUIImageExtensionURL
         self.renderMode = renderMode
